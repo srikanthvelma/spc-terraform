@@ -46,32 +46,4 @@ resource "azurerm_linux_virtual_machine" "azvm" {
     azurerm_network_interface.aznic
   ]
 }
-resource "null_resource" "executor" {
-  triggers = {
-    "rollout_version" = var.rollout_version
-  }
-  connection {
-    type     = "ssh"
-    user     = var.vm_info.vm_username
-    password = var.vm_info.vm_password
-    host     = azurerm_linux_virtual_machine.azvm.public_ip_address
-  }
-  provisioner "file" {
-    source      = "./spc.service"
-    destination = "/tmp/spc.service"
 
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt install openjdk-17-jdk -y",
-      "sudo apt install maven -y",
-      "sudo cp /tmp/spc.service /etc/systemd/system/spc.service",
-      "git clone https://github.com/spring-projects/spring-petclinic.git",
-      "cd spring-petclinic",
-      "./mvnw package",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl start spc.service"
-    ]
-  }
-}
