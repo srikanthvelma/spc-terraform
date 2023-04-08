@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "azrg" {
-    name = var.rg_info.rg_name
-    location = var.rg_info.location
+  name     = var.rg_info.rg_name
+  location = var.rg_info.location
 }
 resource "azurerm_virtual_network" "azvnet" {
   name                = var.vnet_info.vnet_name
@@ -56,7 +56,7 @@ resource "azurerm_network_security_rule" "aznsg_rule2" {
   destination_port_range      = "22"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-    depends_on = [
+  depends_on = [
     azurerm_network_security_group.aznsg
   ]
 }
@@ -72,7 +72,7 @@ resource "azurerm_network_security_rule" "aznsg_rule3" {
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-    depends_on = [
+  depends_on = [
     azurerm_network_security_group.aznsg
   ]
 }

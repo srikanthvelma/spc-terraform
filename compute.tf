@@ -22,12 +22,12 @@ resource "azurerm_network_interface" "aznic" {
 
 }
 resource "azurerm_linux_virtual_machine" "azvm" {
-  name                = var.vm_info.vm_name
-  resource_group_name = azurerm_resource_group.azrg.name
-  location            = azurerm_resource_group.azrg.location
-  size                = var.vm_info.vm_size
-  admin_username      = var.vm_info.vm_username
-  admin_password = var.vm_info.vm_password
+  name                            = var.vm_info.vm_name
+  resource_group_name             = azurerm_resource_group.azrg.name
+  location                        = azurerm_resource_group.azrg.location
+  size                            = var.vm_info.vm_size
+  admin_username                  = var.vm_info.vm_username
+  admin_password                  = var.vm_info.vm_password
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.aznic.id
@@ -42,7 +42,7 @@ resource "azurerm_linux_virtual_machine" "azvm" {
     sku       = var.image_info.sku
     version   = var.image_info.version
   }
-    depends_on = [
+  depends_on = [
     azurerm_network_interface.aznic
   ]
 }
@@ -51,14 +51,14 @@ resource "null_resource" "executor" {
     "rollout_version" = var.rollout_version
   }
   connection {
-    type = "ssh"
-    user = var.vm_info.vm_username
+    type     = "ssh"
+    user     = var.vm_info.vm_username
     password = var.vm_info.vm_password
-    host = azurerm_linux_virtual_machine.azvm.public_ip_address
+    host     = azurerm_linux_virtual_machine.azvm.public_ip_address
   }
   provisioner "file" {
-    source = "./spc.service"
-    destination = "/etc/systemd/system/spc.service"
+    source      = "./spc.service"
+    destination = "/tmp/spc.service"
 
   }
   provisioner "remote-exec" {
@@ -73,5 +73,5 @@ resource "null_resource" "executor" {
       "sudo systemctl daemon-reload",
       "sudo systemctl start spc.service"
     ]
-  }  
+  }
 }
