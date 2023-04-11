@@ -26,6 +26,18 @@ resource "azurerm_network_security_group" "aznsg" {
   name                = "aznsg"
   resource_group_name = azurerm_resource_group.azrg.name
   location            = azurerm_resource_group.azrg.location
+  security_rule = {
+    name                        = "SSH"
+    priority                    = 300
+    direction                   = "Inbound"
+    access                      = "Allow"
+    protocol                    = "Tcp"
+    source_port_range           = "*"
+    destination_port_range      = "22"
+    source_address_prefix       = "*"
+    destination_address_prefix  = "*"
+
+  }
 }
 resource "azurerm_network_security_rule" "aznsg_rule1" {
   name                        = "HTTP"
@@ -45,22 +57,6 @@ resource "azurerm_network_security_rule" "aznsg_rule1" {
 
 }
 resource "azurerm_network_security_rule" "aznsg_rule2" {
-  name                        = "SSH"
-  resource_group_name         = azurerm_resource_group.azrg.name
-  network_security_group_name = azurerm_network_security_group.aznsg.name
-  priority                    = 300
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "22"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  depends_on = [
-    azurerm_network_security_group.aznsg
-  ]
-}
-resource "azurerm_network_security_rule" "aznsg_rule3" {
   name                        = "all"
   resource_group_name         = azurerm_resource_group.azrg.name
   network_security_group_name = azurerm_network_security_group.aznsg.name
